@@ -4,7 +4,7 @@ Category: Standards Track
 Status: Draft
 Author: Ke Wang
 Organization: Nervos Foundation
-Created: 2018-08-01
+Created: 2018-12-01
 ---
 
 # Complete Binary Merkle Tree
@@ -15,7 +15,7 @@ CKB 使用 Complete Binary Merkle Tree 来为静态数据生成 Merkle Root 及 
 
 ## 数据结构
 
-6个item（[T0, T1, T2, T3, T4, T5]）与7个item（[T0, T1, T2, T3, T4, T5, T6]）生成的Tree的结构如下所示：
+6个item([T0, T1, T2, T3, T4, T5])与7个item([T0, T1, T2, T3, T4, T5, T6])生成的Tree的结构如下所示：
 
 ```
         with 6 items                       with 7 items
@@ -64,6 +64,7 @@ sturct Proof {
 Proof gen_proof(Hash tree[], int indexes[]) {
   Hash nodes[];
   Queue queue;
+  
   int size = len(tree) >> 1 + 1;
   desending_sort(indexes);
 
@@ -74,11 +75,13 @@ Proof gen_proof(Hash tree[], int indexes[]) {
   while(queue is not empty) {
     int index = queue.pop_front();
     int subling = calculate_subling(index);
+
     if(subling == queue.front()) {
       queue.pop_front();
     } else {
       nodes.push_back(tree[subling]);
     }
+
     int parent = calculate_parent(index);
     if(parent != 0) {
       queue.push_back(parent);
@@ -104,20 +107,24 @@ bool validate_proof(Proof proof, Hash root, Item items[]) {
   while(queue is not empty) {
     Hash hash, hash1, hash2;
     int index1, index2;
+
     (hash1, index1) = queue.pop_front();
-    int subling = calculate_subling(index1);
     (hash2, index2) = queue.front();
+    int subling = calculate_subling(index1);
+
     if(subling == index2) {
       queue.pop_front();
       hash = merge(hash2, hash1);
     } else {
       hash2 = proof.nodes[i++];
+
       if(is_left_node(index1)) {
         hash = merge(hash1, hash2);
       } else {
         hash = merge(hash2, hash1);
       }
     }
+
     int parent = calculate_parent(index);
     if(parent == 0) {
       return root == hash;
