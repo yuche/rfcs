@@ -15,7 +15,7 @@ CKB uses Complete Binary Merkle Tree(CBMT) to generate Merkle Root and Merkle Pr
 
 ## Tree Struct
 
-Tree with 6 items([T0, T1, T2, T3, T4, T5]) and tree with items([T0, T1, T2, T3, T4, T5, T6]) is shown below:
+Tree with 6 items([T0, T1, T2, T3, T4, T5]) and tree with 7 items([T0, T1, T2, T3, T4, T5, T6]) is shown below:
 
 ```
         with 6 items                       with 7 items
@@ -34,7 +34,7 @@ Tree with 6 items([T0, T1, T2, T3, T4, T5]) and tree with items([T0, T1, T2, T3,
 T2  T3  T4  T5                     T1  T2  T3  T4  T5  T6
 ```
 
-The tree can be stored in an array, so the two trees above can be stored as:
+CBMT can be stored in an array, so the two trees above can be stored as:
 
 ```
 [B0, B1, B2, B3, B4, T0, T1, T2, T3, T4, T5]
@@ -45,7 +45,7 @@ Suppose we have n items, the size of array would be 2n-1, the index of item i(st
 
 ## Merkle Proof
 
-Merkle Proof can provide a proof for existence of one or more items. Incalculable nodes that on the path from leaves to root should be included in the proof. In the tree with 6 items above, in the proof for [T1, T4], only nodes [T5, B3] should be included.
+Merkle Proof can provide a proof for existence of one or more items. Only incalculable nodes that on the path from leaves to root should be included in the proof. If we want to show that [T1, T4] is in the list of 6 items above, only nodes [T5, B3] should be included in the proof.
 
 ### Proof Sturct
 
