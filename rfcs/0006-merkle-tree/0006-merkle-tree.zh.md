@@ -49,12 +49,14 @@ Merkle Proof 能为一个或多个item提供存在性证明，Proof中应只包�
 
 ### Proof 结构
 
-```c
-sturct Proof {
+Proof 结构体的schema形式为：
+
+```
+table Proof {
   // size of items in the tree
-  int size;
+  size: uint32;
   // nodes on the path which can not be calculated, in descending order by index
-  Hash nodes[];
+  nodes: [H256];
 }
 ```
 

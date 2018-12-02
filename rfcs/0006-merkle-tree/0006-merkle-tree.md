@@ -49,12 +49,14 @@ Merkle Proof can provide a proof for existence of one or more items. Incalculabl
 
 ### Proof Sturct
 
-```c
-sturct Proof {
+The schema of proof struct is:
+
+```
+table Proof {
   // size of items in the tree
-  int size;
+  size: uint32;
   // nodes on the path which can not be calculated, in descending order by index
-  Hash nodes[];
+  nodes: [H256];
 }
 ```
 
