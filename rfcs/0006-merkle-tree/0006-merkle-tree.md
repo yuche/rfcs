@@ -53,7 +53,7 @@ Merkle Proof can provide a proof for existence of one or more items. Incalculabl
 sturct Proof {
   // size of items in the tree
   int size;
-  // nodes on the path
+  // nodes on the path which can not be calculated, in descending order by index
   Hash nodes[];
 }
 ```

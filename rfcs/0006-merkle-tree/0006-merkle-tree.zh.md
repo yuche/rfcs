@@ -53,7 +53,7 @@ Merkle Proof 能为一个或多个item提供存在性证明，Proof中应只包�
 sturct Proof {
   // size of items in the tree
   int size;
-  // nodes on the path
+  // nodes on the path which can not be calculated, in descending order by index
   Hash nodes[];
 }
 ```
