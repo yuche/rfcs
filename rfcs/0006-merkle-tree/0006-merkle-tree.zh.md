@@ -47,7 +47,7 @@ T2  T3  T4  T5                     T1  T2  T3  T4  T5  T6
 
 ## Merkle Proof
 
-Merkle Proof 能为一个或多个item提供存在性证明，Proof中应只包含从叶子节点到根节点路径中无法直接计算的节点，如在6个item的Merkle Tree中为[T1, T4]生成的Proof中应只包含[T5, T0, B3]。
+Merkle Proof 能为一个或多个item提供存在性证明，Proof中应只包含从叶子节点到根节点路径中无法直接计算的节点，且节点按下标从大到小排列。如在6个item的Merkle Tree中为[T1, T4]生成的Proof中应只包含[T5, T0, B3]。
 
 ### Proof 结构
 

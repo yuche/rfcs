@@ -47,7 +47,7 @@ Specially, the tree with 0 item is empty(0 node) and its root is H256::zero.
 
 ## Merkle Proof
 
-Merkle Proof can provide a proof for existence of one or more items. Only sibling of the nodes along the path that form leaves to root, excluding the nodes already in the path, should be included in the proof. If we want to show that [T1, T4] is in the list of 6 items above, only nodes [T5, T0, B3] should be included in the proof.
+Merkle Proof can provide a proof for existence of one or more items. Only sibling of the nodes along the path that form leaves to root, excluding the nodes already in the path, should be included in the proof. Moreover, the nodes should presented in the index's descending order. If we want to show that [T1, T4] is in the list of 6 items above, only nodes [T5, T0, B3] should be included in the proof.
 
 ### Proof Sturct
 
