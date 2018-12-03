@@ -11,7 +11,7 @@ Created: 2018-12-01
 
 ## 概述
 
-CKB 使用 Complete Binary Merkle Tree 来为静态数据生成 Merkle Root 及 Merkle Proof，如计算Transactions Root。它是一棵完全二叉树，节点排列方式与完全二叉树相同，相比于其它的 Merkle Tree，Complete Binary Merkle Tree具有最少的Hash计算量及最小的proof size。
+CKB 使用 Complete Binary Merkle Tree 来为静态数据生成 Merkle Root 及 Merkle Proof，如计算Transactions Root。它是一棵完全二叉树，同时也是一棵满树，其节点排列方式与完全二叉树相同，相比于其它的 Merkle Tree，Complete Binary Merkle Tree具有最少的Hash计算量及最小的proof size。
 
 ## 数据结构
 

@@ -11,7 +11,7 @@ Created: 2018-12-01
 
 ## Introduction
 
-CKB uses Complete Binary Merkle Tree(CBMT) to generate Merkle Root and Merkle Proof for a static list of items, such as Transactions Root. Basically, CBMT is a complete binary tree, so it has the same node order with the complete binary tree. Compare with other Merkle trees, the hash computation of CBMT is minimal, as well as the proof size.
+CKB uses Complete Binary Merkle Tree(CBMT) to generate Merkle Root and Merkle Proof for a static list of items, such as Transactions Root. Basically, CBMT is a complete binary tree as well as a full tree, it has the same node order with the complete binary tree. Compare with other Merkle trees, the hash computation of CBMT is minimal, as well as the proof size.
 
 ## Tree Struct
 
