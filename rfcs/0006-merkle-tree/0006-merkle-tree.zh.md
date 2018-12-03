@@ -15,7 +15,7 @@ CKB 使用 Complete Binary Merkle Tree 来为静态数据生成 Merkle Root 及 
 
 ## 数据结构
 
-6个item([T0, T1, T2, T3, T4, T5])与7个item([T0, T1, T2, T3, T4, T5, T6])生成的Tree的结构如下所示：
+6个item(item的Hash为[T0, T1, T2, T3, T4, T5])与7个item(item的hash为[T0, T1, T2, T3, T4, T5, T6])生成的Tree的结构如下所示：
 
 ```
         with 6 items                       with 7 items
@@ -43,9 +43,11 @@ T2  T3  T4  T5                     T1  T2  T3  T4  T5  T6
 
 假设有n个item，则数组的大小为2n-1，item i 在数组中的下标为（下标从0开始）i+n-1。对于下标为i的节点，其父节点下标为(i-1)/2，兄弟节点下标为(i+1)^1-1，子节点的下标为2i+1、2i+2。
 
+此外，我们规定对于只有0个item的情况，生成的tree只有0个node，其root为H256::zero。
+
 ## Merkle Proof
 
-Merkle Proof 能为一个或多个item提供存在性证明，Proof中应只包含从叶子节点到根节点路径中无法直接计算的节点，如在6个item的Merkle Tree中为[T1, T4]生成的Proof中应只包含[T5, B3]。
+Merkle Proof 能为一个或多个item提供存在性证明，Proof中应只包含从叶子节点到根节点路径中无法直接计算的节点，如在6个item的Merkle Tree中为[T1, T4]生成的Proof中应只包含[T5, T0, B3]。
 
 ### Proof 结构
 
@@ -76,12 +78,12 @@ Proof gen_proof(Hash tree[], int indexes[]) {
 
   while(queue is not empty) {
     int index = queue.pop_front();
-    int subling = calculate_subling(index);
+    int sibling = calculate_sibling(index);
 
-    if(subling == queue.front()) {
+    if(sibling == queue.front()) {
       queue.pop_front();
     } else {
-      nodes.push_back(tree[subling]);
+      nodes.push_back(tree[sibling]);
     }
 
     int parent = calculate_parent(index);
@@ -98,6 +100,10 @@ Proof gen_proof(Hash tree[], int indexes[]) {
 
 ```c++
 bool validate_proof(Proof proof, Hash root, Item items[]) {
+  if(proof.size = 0) {
+    return root == H256::zero;
+  }
+
   Queue queue;
   desending_sort_by_item_index(items);
   
@@ -112,9 +118,9 @@ bool validate_proof(Proof proof, Hash root, Item items[]) {
 
     (hash1, index1) = queue.pop_front();
     (hash2, index2) = queue.front();
-    int subling = calculate_subling(index1);
+    int sibling = calculate_sibling(index1);
 
-    if(subling == index2) {
+    if(sibling == index2) {
       queue.pop_front();
       hash = merge(hash2, hash1);
     } else {
@@ -133,5 +139,7 @@ bool validate_proof(Proof proof, Hash root, Item items[]) {
     }
     queue.push_back((hash, parent))
   }
+
+  return false;
 }
 ```

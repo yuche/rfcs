@@ -15,7 +15,7 @@ CKB uses Complete Binary Merkle Tree(CBMT) to generate Merkle Root and Merkle Pr
 
 ## Tree Struct
 
-Tree with 6 items([T0, T1, T2, T3, T4, T5]) and tree with 7 items([T0, T1, T2, T3, T4, T5, T6]) is shown below:
+Tree with 6 items(the hashes are [T0, T1, T2, T3, T4, T5]) and tree with 7 items(the hashes are [T0, T1, T2, T3, T4, T5, T6]) is shown below:
 
 ```
         with 6 items                       with 7 items
@@ -43,9 +43,11 @@ CBMT can be stored in an array, so the two trees above can be stored as:
 
 Suppose we have n items, the size of array would be 2n-1, the index of item i(start at 0) is i+n-1. For node at i, the index of its parent is (i-1)/2, the index of its sibling is (i+1)^1-1 and the indexes of its children are [2i+1, 2i+2].
 
+Specially, the tree with 0 item is empty(0 node) and its root is H256::zero.
+
 ## Merkle Proof
 
-Merkle Proof can provide a proof for existence of one or more items. Only incalculable nodes that on the path from leaves to root should be included in the proof. If we want to show that [T1, T4] is in the list of 6 items above, only nodes [T5, B3] should be included in the proof.
+Merkle Proof can provide a proof for existence of one or more items. Only sibling of the nodes along the path that form leaves to root, excluding the nodes already in the path, should be included in the proof. If we want to show that [T1, T4] is in the list of 6 items above, only nodes [T5, T0, B3] should be included in the proof.
 
 ### Proof Sturct
 
@@ -76,12 +78,12 @@ Proof gen_proof(Hash tree[], int indexes[]) {
 
   while(queue is not empty) {
     int index = queue.pop_front();
-    int subling = calculate_subling(index);
+    int sibling = calculate_sibling(index);
 
-    if(subling == queue.front()) {
+    if(sibling == queue.front()) {
       queue.pop_front();
     } else {
-      nodes.push_back(tree[subling]);
+      nodes.push_back(tree[sibling]);
     }
 
     int parent = calculate_parent(index);
@@ -98,6 +100,10 @@ Proof gen_proof(Hash tree[], int indexes[]) {
 
 ```c++
 bool validate_proof(Proof proof, Hash root, Item items[]) {
+  if(proof.size = 0) {
+    return root == H256::zero;
+  }
+  
   Queue queue;
   desending_sort_by_item_index(items);
   
@@ -112,9 +118,9 @@ bool validate_proof(Proof proof, Hash root, Item items[]) {
 
     (hash1, index1) = queue.pop_front();
     (hash2, index2) = queue.front();
-    int subling = calculate_subling(index1);
+    int sibling = calculate_sibling(index1);
 
-    if(subling == index2) {
+    if(sibling == index2) {
       queue.pop_front();
       hash = merge(hash2, hash1);
     } else {
@@ -133,5 +139,7 @@ bool validate_proof(Proof proof, Hash root, Item items[]) {
     }
     queue.push_back((hash, parent))
   }
+
+  return false;
 }
 ```
