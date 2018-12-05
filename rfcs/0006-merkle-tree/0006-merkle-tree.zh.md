@@ -7,15 +7,17 @@ Organization: Nervos Foundation
 Created: 2018-12-01
 ---
 
-# Complete Binary Merkle Tree
+# 静态 Merkle Tree
 
-## 概述
+## Complete Binary Merkle Tree
 
-CKB 使用 Complete Binary Merkle Tree 来为静态数据生成 Merkle Root 及 Merkle Proof，如计算Transactions Root。它是一棵完全二叉树，同时也是一棵满树，其节点排列方式与完全二叉树相同，相比于其它的 Merkle Tree，Complete Binary Merkle Tree具有最少的Hash计算量及最小的proof size。
+CKB 使用 ***Complete Binary Merkle Tree(CBMT)*** 来为静态数据生成 `Merkle Root` 及 `Merkle Proof`，目前CBMT被用于`Transactions Root`的计算中。它是一棵完全二叉树，同时也是一棵满二叉树，相比于其它的 Merkle Tree，Complete Binary Merkle Tree具有最少的Hash计算量及最小的proof size。
 
-## 数据结构
+## 节点组织形式
 
-6个item(item的Hash为[T0, T1, T2, T3, T4, T5])与7个item(item的hash为[T0, T1, T2, T3, T4, T5, T6])生成的Tree的结构如下所示：
+规定CBMT中节点的排列顺序为从上到下、从左到右，在一棵由`n`个item生成的CBMT中，第一个`node`为`Merkle Root`，第`n`个节点为第1个item的hash，第`n+1`个节点为第2个item的hash，以此类推。之所以采用这种排列方式，是因为从item的位置很容易计算出CBMT中节点的位置。
+
+举例来说，6个item(假设item的Hash为`[T0, T1, T2, T3, T4, T5]`)与7个item(假设item的hash为`[T0, T1, T2, T3, T4, T5, T6]`)生成的Tree的结构如下所示：
 
 ```
         with 6 items                       with 7 items
@@ -34,20 +36,22 @@ CKB 使用 Complete Binary Merkle Tree 来为静态数据生成 Merkle Root 及 
 T2  T3  T4  T5                     T1  T2  T3  T4  T5  T6
 ```
 
-构建的Tree可以存在一个数组中，上面的两棵tree用数组表示分别为：
+此外，我们规定对于只有0个item的情况，生成的tree只有0个node，其root为`H256::zero`。
+
+## 数据结构
+
+CBMT可以用一个数组来表示，节点按照升序存放在数组中，上面的两棵tree用数组表示分别为：
 
 ```
 [B0, B1, B2, B3, B4, T0, T1, T2, T3, T4, T5]
 [B0, B1, B2, B3, B4, B5, T0, T1, T2, T3, T4, T5, T6]
 ```
 
-假设有n个item，则数组的大小为2n-1，item i 在数组中的下标为（下标从0开始）i+n-1。对于下标为i的节点，其父节点下标为(i-1)/2，兄弟节点下标为(i+1)^1-1，子节点的下标为2i+1、2i+2。
-
-此外，我们规定对于只有0个item的情况，生成的tree只有0个node，其root为H256::zero。
+在一个由n个item生成的CBMT中，其数组的大小为`2n-1`，`item i` 在数组中的下标为（下标从0开始）`i+n-1`。对于下标为`i`的节点，其父节点下标为`(i-1)/2`，兄弟节点下标为`(i+1)^1-1`（^为异或），子节点的下标为`2i+1`、`2i+2`。
 
 ## Merkle Proof
 
-Merkle Proof 能为一个或多个item提供存在性证明，Proof中应只包含从叶子节点到根节点路径中无法直接计算的节点，如在6个item的Merkle Tree中为[T1, T4]生成的Proof中应只包含[T5, T0, B3]。
+Merkle Proof 能为一个或多个item提供存在性证明，Proof中应只包含从叶子节点到根节点路径中无法直接计算出的节点，并行我们规定这些节点按照降序排列。如在6个item的Merkle Tree中为`[T1, T4]`生成的Proof中应只包含`[T5, T0, B3]`。
 
 ### Proof 结构
 
